@@ -6,7 +6,6 @@ def markov(rho, A, nmax, rng):
 
     assert A.shape[0] == A.shape[1] # A matrice carré
     assert np.all(np.isclose(A.sum(axis = 1), 1)) # A matrice stochastique
-
     assert np.all(rho >= 0)
     assert rho.ndim == 1 and rho.size == A.shape[0]
     assert np.isclose(rho.sum(), 1)
@@ -17,20 +16,11 @@ def markov(rho, A, nmax, rng):
     X[0] = rng.choice(np.arange(N), p=rho) # Initialisation de X_0 avec la loi de rho
 
     q = 0
-    while q < nmax - 1:
+    for q in range(0, nmax - 1):
         current_state = X[q]
-
-        T = rng.geometric(A[current_state, current_state]) - 1
-
-        for t in range(min(T + 1, nmax - q - 1)):
-            X[q + t + 1] = current_state
-
-        q += T + 1
-
         # Determiner le nouvel état
-        if q < nmax:
-            next_state = rng.choice(np.arange(N), p=A[current_state])
-            X[q] = next_state
+        next_state = rng.choice(np.arange(N), p=A[current_state])
+        X[q + 1] = next_state
 
     return X
 
